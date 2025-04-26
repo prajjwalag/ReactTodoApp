@@ -47,6 +47,30 @@ const TodoPage = () => {
         setTodos(sortedTodos);
     }
 
+    function handleTodoUpdate(id, newTodoText) {
+        const updatedTodos = todos.map((todo) => {
+            if (todo.id === id) {
+                return { ...todo, text: newTodoText };
+            }
+            return todo;
+        });
+        setTodos(updatedTodos);
+    }
+
+    function handleTodoMoveUp(index) {
+        if (index === 0) return; // Already at the top
+        const updatedTodos = [...todos];
+        [updatedTodos[index], updatedTodos[index - 1]] = [updatedTodos[index - 1], updatedTodos[index]];
+        setTodos(updatedTodos);
+    }
+
+    function handleTodoMoveDown(index) {
+        if (index === todos.length - 1) return; // Already at the bottom
+        const updatedTodos = [...todos];
+        [updatedTodos[index], updatedTodos[index + 1]] = [updatedTodos[index + 1], updatedTodos[index]];
+        setTodos(updatedTodos);
+    }
+
     const emptyState = <h2>No tasks available. Add a new Todo</h2>;
     const completedTasks = todos.filter((todo) => todo.completed).length;
     const pendingTasks = todos.filter((todo) => !todo.completed).length;
@@ -75,8 +99,8 @@ const TodoPage = () => {
         <div>
             <h2>Tasks List</h2>
             <h4>{completedTasks}/{todos.length} Completed</h4>
-            {todos.map((todo ) => (
-                   <TodoItem key={todo.id} todo={todo} onTodoToggle={handleCheckboxToggle} onTodoDelete={handleTodoDelete}/>
+            {todos.map((todo, index ) => (
+                   <TodoItem key={todo.id} todo={todo} onTodoToggle={handleCheckboxToggle} onTodoDelete={handleTodoDelete} onTodoUpdate={handleTodoUpdate} onMoveUp={handleTodoMoveUp} onMoveDown={handleTodoMoveDown} index={index} todosCount={todos.length}/>
             ))}
         </div>
         }
