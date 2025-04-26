@@ -34,10 +34,27 @@ const TodoPage = () => {
         setTodos(updatedTodos);
     }
 
+    function handleDeleteAllTodos() {
+        const confirmDelete = window.confirm('Are you sure you want to delete all todos?');
+        if (confirmDelete) {
+            setTodos([]);
+        }
+    }
+
+    function handleSortAllTodos() {
+       //Sort in the alphabetical order of the text
+        const sortedTodos = [...todos].sort((a, b) => a.text.localeCompare(b.text));
+        setTodos(sortedTodos);
+    }
+
     const emptyState = <h2>No tasks available. Add a new Todo</h2>;
     const completedTasks = todos.filter((todo) => todo.completed).length;
     const pendingTasks = todos.filter((todo) => !todo.completed).length;
-
+    const isTodoEmpty = todos.length === 0;
+    const isTodoSorted = todos.every((todo, index) => {
+        if (index === 0) return true; // First element is always sorted
+        return todo.text >= todos[index - 1].text;
+    });
 
   return (
     <div>
@@ -47,9 +64,14 @@ const TodoPage = () => {
         <input type="date" name='todoTargetDate' placeholder='Date'/>
         <button>Submit</button>
       </form>
+
+        <br />
+        <br />
+        {!isTodoEmpty && <button onClick={handleDeleteAllTodos}>Delete All</button>}
+        {!isTodoSorted&& <button onClick={handleSortAllTodos}>Sort All</button> }
     
     <hr />
-        {todos.length === 0 ? emptyState : 
+        {isTodoEmpty ? emptyState : 
         <div>
             <h2>Tasks List</h2>
             <h4>{completedTasks}/{todos.length} Completed</h4>
